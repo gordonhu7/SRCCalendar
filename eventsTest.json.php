@@ -1,15 +1,19 @@
 <?php
 $out = array();
 
-$out[0] = array(
-    'id' => '231',
-    'title' => 'Event name'
-    'url' => 'http://www.example.com/',
-    'class' => 'event-important',
-    'start' => '1362938400000',
-    'end' => '1363197686300'
-);
+ for($i = 0; $i <= 5; $i++){   //from day 01 to day 15
+    $day = date('Y-m-d', strtotime("+". $i ." days"));
+    $nextDay = date('Y-m-d', strtotime("+". ($i + 1) ." days"));
+    $out[] = array(
+        'id' => $i,
+        'title' => 'Event name '.$i,
+        'url' => "http://www.example.com/",
+        'class' => 'event-important',
+        'start' => strtotime($day).'000',
+        'end' => strtotime($nextDay).'000'
+    );
+}
 
 echo json_encode(array('success' => 1, 'result' => $out));
 exit;
-
+?>

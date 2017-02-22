@@ -2,12 +2,22 @@
 
 	"use strict";
 
+	// getting current date into y-m-d format
+	var d = new Date();
+
+	var month = d.getMonth()+1;
+	var day = d.getDate();
+
+	var date = d.getFullYear() + '-' +
+	    ((''+month).length < 2 ? '0' : '') + month + '-' +
+	    ((''+day).length < 2 ? '0' : '') + day;
+
 	var options = {
 		events_source: 'eventsTest.json.php',
-		view: 'month',
+		view: 'week',
 		tmpl_path: 'tmpls/',
 		tmpl_cache: false,
-		day: '2013-03-21',
+		day: date,
 		onAfterEventsLoad: function(events) {
 			if(!events) {
 				return;
