@@ -3,11 +3,11 @@
 	"use strict";
 
 	var options = {
-		events_source: 'events.json.php',
+		events_source: 'eventsTest.json.php',
 		view: 'month',
 		tmpl_path: 'tmpls/',
 		tmpl_cache: false,
-		day: '2013-03-12',
+		day: '2013-03-21',
 		onAfterEventsLoad: function(events) {
 			if(!events) {
 				return;
@@ -22,7 +22,7 @@
 			});
 		},
 		onAfterViewLoad: function(view) {
-			$('.page-header h3').text(this.getTitle());
+			$('.page-header h3').text(this.getTitle()); 		//title "week x of x etc"
 			$('.btn-group button').removeClass('active');
 			$('button[data-calendar-view="' + view + '"]').addClass('active');
 		},
