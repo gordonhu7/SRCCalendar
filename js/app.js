@@ -2,9 +2,8 @@
 
 	"use strict";
 
-	// getting current date into y-m-d format
+	/* Getting current date into y-m-d format */
 	var d = new Date();
-
 	var month = d.getMonth()+1;
 	var day = d.getDate();
 
@@ -13,7 +12,7 @@
 	    ((''+day).length < 2 ? '0' : '') + day;
 
 	var options = {
-		events_source: 'eventsTest.json.php',
+		events_source: 'events.json.php',
 		view: 'week',
 		tmpl_path: 'tmpls/',
 		tmpl_cache: false,

@@ -1,77 +1,100 @@
-{
-	"success": 1,
-	"result": [
+<?php 
+
+	include "api/dbinfo.inc"; 
+	include 'ChromePhp.php';
+
+	ChromePhp::log('Connecting to db...');
+
+	/* Connect to MySQL and select the database. */
+	$connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
+
+	if (mysqli_connect_errno()) ChromePhp::error("Failed to connect to MySQL: " . mysqli_connect_error());
+
+	$database = mysqli_select_db($connection, DB_DATABASE);
+
+
+	/* Ensure that the Employees table exists. */
+	VerifyEventsTable($connection, DB_DATABASE); 
+
+	/* Creating fake events data */ 
+	date_default_timezone_set('America/Los_Angeles');
+	$orgName = "ABC";
+	$title = "new event 2";
+	$start = "2017-02-24 13:00:00";
+	$end = "2017-02-24 14:00:00";
+	// $start = date('Y-m-d H:i:s', strtotime("+ 14 hours"));
+	// $end = date('Y-m-d H:i:s', strtotime("+ 16 hours"));
+
+	// AddEvent($connection, $orgName, $title, $start, $end);
+
+	/* Getting events data from db*/
+	$result = mysqli_query($connection, "SELECT * FROM Events"); 
+	$out = array();
+
+	if (mysqli_num_rows($result) != 0) {
+		ChromePhp::log('Successful query from db');
+	} else {
+		ChromePhp::log('Empty result from db query');
+	}
+
+	while($query_data = mysqli_fetch_row($result)) {
+		$out[] = array(
+			'id' => '100',
+			'title' => $query_data[2],
+			'url' => "http://www.example.com/",
+			'class' => 'event-important',
+			'start' => strtotime($query_data[3]).'000',
+			'end' => strtotime($query_data[4]).'000'
+		);
+	}
+
+	echo json_encode(array('success' => 1, 'result' => $out));
+
+	mysqli_free_result($result);
+	mysqli_close($connection);
+
+	/* Add an event to the table. */
+	function AddEvent($connection, $orgName, $title, $start, $end) {
+		$o = mysqli_real_escape_string($connection, $orgName);
+		$t = mysqli_real_escape_string($connection, $title);
+		$s = mysqli_real_escape_string($connection, $start);
+		$e = mysqli_real_escape_string($connection, $end);
+
+		$query = "INSERT INTO `Events` (`OrgName`, `Title`, `Start`, `End`) 
+					VALUES ('$o', '$t', '$s', '$e');";
+
+		if(!mysqli_query($connection, $query)) ChromePhp::error("Error adding event data.");
+	}
+
+	/* Check whether the table exists and, if not, create it. */
+	function VerifyEventsTable($connection, $dbName) {
+		if(!TableExists("Events", $connection, $dbName)) 
 		{
-			"id": "293",
-			"title": "This is warning class event with very long title to check how it fits to evet in day view",
-			"url": "http://www.example.com/",
-			"class": "event-warning",
-			"start": "1487736498035",
-			"end":   "1488009600000"
-		},
-		{
-			"id": "256",
-			"title": "Event that ends on timeline",
-			"url": "http://www.example.com/",
-			"class": "event-warning",
-			"start": "1363155300000",
-			"end":   "1363227600000"
-		},
-		{
-			"id": "276",
-			"title": "Short day event",
-			"url": "http://www.example.com/",
-			"class": "event-success",
-			"start": "1363245600000",
-			"end":   "1363252200000"
-		},
-		{
-			"id": "294",
-			"title": "This is information class ",
-			"url": "http://www.example.com/",
-			"class": "event-info",
-			"start": "1363111200000",
-			"end":   "1363284086400"
-		},
-		{
-			"id": "297",
-			"title": "This is success event",
-			"url": "http://www.example.com/",
-			"class": "event-success",
-			"start": "1363234500000",
-			"end":   "1363284062400"
-		},
-		{
-			"id": "54",
-			"title": "This is simple event",
-			"url": "http://www.example.com/",
-			"class": "",
-			"start": "1363712400000",
-			"end":   "1363716086400"
-		},
-		{
-			"id": "532",
-			"title": "This is inverse event",
-			"url": "http://www.example.com/",
-			"class": "event-inverse",
-			"start": "1364407200000",
-			"end":   "1364493686400"
-		},
-		{
-			"id": "548",
-			"title": "This is special event",
-			"url": "http://www.example.com/",
-			"class": "event-special",
-			"start": "1363197600000",
-			"end":   "1363629686400"
-		},
-		{
-			"id": "295",
-			"title": "Event 3",
-			"url": "http://www.example.com/",
-			"class": "event-important",
-			"start": "1364320800000",
-			"end":   "1364407286400"
+			$query = "CREATE TABLE `Events` (
+					`ID` int(11) NOT NULL AUTO_INCREMENT,
+					`OrgName` varchar(45) DEFAULT NULL,
+					`Title` varchar(45) DEFAULT NULL,
+					`Start` varchar(45) DEFAULT NULL,
+					`End` varchar(45) DEFAULT NULL,
+					PRIMARY KEY (`ID`),
+					UNIQUE KEY `ID_UNIQUE` (`ID`)
+				) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1";
+
+			if(!mysqli_query($connection, $query)) ChromePhp::error("Error creating table.");
 		}
-	]
-}
+	}
+
+	/* Check for the existence of a table. */
+	function TableExists($tableName, $connection, $dbName) {
+		$t = mysqli_real_escape_string($connection, $tableName);
+		$d = mysqli_real_escape_string($connection, $dbName);
+
+		$checktable = mysqli_query($connection, 
+				"SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = '$t' AND TABLE_SCHEMA = '$d'");
+
+		if(mysqli_num_rows($checktable) > 0) return true;
+
+		return false;
+	}
+	exit;
+?>
