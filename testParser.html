@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+
+<body>
+
+	<script type="text/javascript" src="googleSpreadsheetsParser.js">
+	</script>
+
+	var url = "https://docs.google.com/spreadsheets/u/1/d/1PJ3WNzB0MT-KN-_hDV00InJ4BaYeuFrXDIgIsIw5tms/pubhtml"
+
+	var gss = new GoogleSpreadsheetParser(url,{sheetTitle: 'Form Responses 1 ', hasTitle: true});
+
+	console.log(gss.contents[1][1]);
+
+
+</body>
+
+</html>
+
+
+
+
+
