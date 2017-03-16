@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+	<script type="text/javascript" src="google-spreadsheets-parser-0.2.0\dist\googleSpreadsheetsParser.js">
+	</script>
 </head>
 
 <body>
+	<script>
+		var url = "https://docs.google.com/spreadsheets/d/1PJ3WNzB0MT-KN-_hDV00InJ4BaYeuFrXDIgIsIw5tms/pubhtml";
 
-	<script type="text/javascript" src="googleSpreadsheetsParser.js">
+		var gss = new GoogleSpreadsheetsParser(url,{sheetTitle: 'Form Responses 1', hasTitle: true});
+
+		console.log(gss.contents[0][0]);
 	</script>
-
-	var url = "https://docs.google.com/spreadsheets/u/1/d/1PJ3WNzB0MT-KN-_hDV00InJ4BaYeuFrXDIgIsIw5tms/pubhtml"
-
-	var gss = new GoogleSpreadsheetParser(url,{sheetTitle: 'Form Responses 1 ', hasTitle: true});
-
-	console.log(gss.contents[1][1]);
 
 
 </body>
